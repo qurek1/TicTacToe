@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class TicTacToe extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         primaryStage.setScene(new Scene(Board.createContent()));
         primaryStage.show();
     }
