@@ -14,7 +14,7 @@ public class TicTacToe extends Application {
 
         primaryStage.setTitle("Tic Tac Toe");
         Board board = new Board(3);
-        ScoreBoard scoreBoard = new ScoreBoard();
+        ScoreBoard scoreBoard = ScoreBoard.INSTANCE;
         Buttons buttons = new Buttons();
 
         VBox vBox = new VBox(10, board, scoreBoard, buttons);

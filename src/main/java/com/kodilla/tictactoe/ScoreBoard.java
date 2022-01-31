@@ -9,10 +9,12 @@ import javafx.scene.text.TextAlignment;
 
 public class ScoreBoard extends Pane {
 
-    final Label scoreDisplay = new Label("Current result (you : me) - " + 0 + " : " + 0);
+    static ScoreBoard INSTANCE = new ScoreBoard();
+    private int you = 0;
+    private int me = 0;
+    final Label scoreDisplay = new Label();
 
-    public ScoreBoard() {
-
+    private ScoreBoard() {
         setPrefSize(600, 20);
 
         scoreDisplay.setMinSize(560, 20);
@@ -24,6 +26,21 @@ public class ScoreBoard extends Pane {
         scoreDisplay.setStyle("-fx-font-weight: bold");
 
         getChildren().add(scoreDisplay);
+    }
 
+    void addCompWon(){
+        you++;
+        updateScore();
+    }
+
+    void addPlayerWon(){
+        me++;
+        updateScore();
+    }
+
+    void updateScore(){
+        String text = String.format("Current result (you : me) - %s : %s", you, me);
+        Label currLabl = (Label) getChildren().stream().findAny().get();
+        currLabl.setText(text);
     }
 }

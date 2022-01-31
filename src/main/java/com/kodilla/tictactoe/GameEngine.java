@@ -161,7 +161,12 @@ public class GameEngine {
             boardMirror[x][y] = 1;
             int result = checkResult();
             updateScoreboardResults(result);
-            gameOver = (result != NO_WINNER || (countFreeCells() == 0));
+            if(result != NO_WINNER || (countFreeCells() == 0)){
+                gameOver = true;
+                ScoreBoard.INSTANCE.addPlayerWon();
+            }else {
+                gameOver = false;
+            }
             if (!gameOver) makeMoveForMachine();
         }
     }
@@ -187,7 +192,12 @@ public class GameEngine {
         boardMirror[bestMoveX][bestMoveY] = -1;
         int result = checkResult();
         updateScoreboardResults(result);
-        gameOver = (result != NO_WINNER || countFreeCells() == 0);
+        if(result != NO_WINNER || countFreeCells() == 0){
+            gameOver = true;
+            ScoreBoard.INSTANCE.addCompWon();
+        }else {
+            gameOver = false;
+        }
     }
 
     private int miniMax(int[][] board, boolean looksForMax) {
