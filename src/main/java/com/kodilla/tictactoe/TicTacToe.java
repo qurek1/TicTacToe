@@ -3,13 +3,27 @@ package com.kodilla.tictactoe;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 
 public class TicTacToe extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setScene(new Scene(Board.createContent()));
+    public void start(Stage primaryStage) {
+
+        primaryStage.setTitle("Tic Tac Toe");
+        Board board = new Board(3);
+        ScoreBoard scoreBoard = ScoreBoard.INSTANCE;
+        ScoreBoard.INSTANCE.updateScoreBoard();
+        Buttons buttons = Buttons.INSTANCE;
+
+        VBox vBox = new VBox(10, board, scoreBoard, buttons);
+        vBox.setPrefHeight(board.getPrefHeight() + buttons.getPrefHeight() + 80);
+
+
+        primaryStage.setScene(new Scene(vBox));
+
         primaryStage.show();
     }
 
