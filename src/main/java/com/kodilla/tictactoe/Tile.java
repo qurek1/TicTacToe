@@ -23,7 +23,10 @@ public class Tile extends StackPane {
         setAlignment(Pos.CENTER);
         getChildren().addAll(border, tileDescription);
 
-        setOnMouseClicked(event -> GameEngine.INSTANCE.click(event, this));
+        setOnMouseClicked(event -> {
+            Buttons.INSTANCE.switchMiddleButtonFunction();
+            GameEngine.INSTANCE.makeMoveForPlayer(event, this);
+        });
     }
 
     public int getX() {

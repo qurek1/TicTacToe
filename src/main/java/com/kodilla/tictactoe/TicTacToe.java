@@ -14,11 +14,13 @@ public class TicTacToe extends Application {
 
         primaryStage.setTitle("Tic Tac Toe");
         Board board = new Board(3);
-        ScoreBoard scoreBoard = new ScoreBoard();
-        Buttons buttons = new Buttons();
+        ScoreBoard scoreBoard = ScoreBoard.INSTANCE;
+        ScoreBoard.INSTANCE.updateScoreBoard();
+        Buttons buttons = Buttons.INSTANCE;
 
         VBox vBox = new VBox(10, board, scoreBoard, buttons);
         vBox.setPrefHeight(board.getPrefHeight() + buttons.getPrefHeight() + 80);
+
 
         primaryStage.setScene(new Scene(vBox));
 

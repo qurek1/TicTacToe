@@ -6,42 +6,56 @@ import javafx.scene.layout.Pane;
 
 public class Buttons extends Pane {
 
-    final Button newGame = new Button("Start new game");
-    final Button continueLastGame = new Button("Continue last game");
-    final Button exit = new Button("Exit game");
+    static Buttons INSTANCE = new Buttons();
 
-    public Buttons() {
+    final Button left = new Button("Start new game");
+    final Button middle = new Button("Continue last game");
+    final Button right = new Button("Exit game");
+    boolean clearScoreboard = false;
+
+    private Buttons() {
 
         setPrefSize(600, 30);
 
-        newGame.setMaxSize(180, 40);
-        newGame.setMinSize(180, 40);
-        newGame.setLayoutX(10);
-        newGame.setLayoutY(10);
-        newGame.setOnAction(actionEvent -> {
+        left.setMaxSize(180, 40);
+        left.setMinSize(180, 40);
+        left.setLayoutX(10);
+        left.setLayoutY(10);
+        left.setOnAction(actionEvent -> {
             GameEngine.INSTANCE.startNewGame();
+            switchMiddleButtonFunction();
         });
 
-        continueLastGame.setMaxSize(180, 40);
-        continueLastGame.setMinSize(180, 40);
-        continueLastGame.setLayoutX(210);
-        continueLastGame.setLayoutY(10);
-        continueLastGame.setOnAction(actionEvent -> {
-            GameEngine.INSTANCE.readGameState();
+        middle.setMaxSize(180, 40);
+        middle.setMinSize(180, 40);
+        middle.setLayoutX(210);
+        middle.setLayoutY(10);
+        middle.setOnAction(actionEvent -> {
+            if (clearScoreboard) {
+                ScoreBoard.INSTANCE.clearScoreBoard();
+            } else {
+                GameEngine.INSTANCE.readGameState();
+                switchMiddleButtonFunction();
+            }
         });
 
-        exit.setMinSize(180, 40);
-        exit.setMaxSize(180, 40);
-        exit.setLayoutX(410);
-        exit.setLayoutY(10);
-        exit.setOnAction(actionEvent -> {
+        right.setMinSize(180, 40);
+        right.setMaxSize(180, 40);
+        right.setLayoutX(410);
+        right.setLayoutY(10);
+        right.setOnAction(actionEvent -> {
             GameEngine.INSTANCE.storeGameState();
             Platform.exit();
             System.exit(0);
         });
 
-        getChildren().add(newGame);
-        getChildren().add(exit);
-        getChildren().add(continueLastGame);
+        getChildren().add(left);
+        getChildren().add(right);
+        getChildren().add(middle);
+    }
+
+    public void switchMiddleButtonFunction() {
+        clearScoreboard = true;
+        middle.setText("Clear scoreboard");
     }
 }

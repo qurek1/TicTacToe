@@ -20,9 +20,7 @@ public class GameEngine {
     private Tile[][] board = new Tile[5][5];
     private final int[][] boardMirror = new int[5][5];
     private int bestMoveX, bestMoveY;
-    private int playerNoOfWins, machineNoOfWins;
     private File savedGameState = new File("gamestate.dat");
-    private Map<Integer, Integer> boardMap = new HashMap<>();
 
 
     private GameEngine() {
@@ -37,6 +35,14 @@ public class GameEngine {
         this.board = board;
     }
 
+    public void initBoardMirror() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                boardMirror[i][j] = 0;
+            }
+        }
+    }
+
     public void startNewGame() {
         for (int i = 0; i < noOfCells; i++) {
             for (int j = 0; j < noOfCells; j++) {
@@ -49,11 +55,15 @@ public class GameEngine {
 
     public void storeGameState() {
 
-        for(int i = 0; i< noOfCells; i++) {
-            for (int j = 0; j < noOfCells; j++){
+        Map<Integer, Integer> boardMap = new HashMap<>();
+
+        for (int i = 0; i < noOfCells; i++) {
+            for (int j = 0; j < noOfCells; j++) {
                 boardMap.put(10 * i + j, gameOver ? 0 : boardMirror[i][j]);
             }
         }
+        boardMap.put(-99, ScoreBoard.INSTANCE.getMachineScore());
+        boardMap.put(99, ScoreBoard.INSTANCE.getPlayerScore());
 
         try {
             ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(savedGameState));
@@ -65,6 +75,9 @@ public class GameEngine {
     }
 
     public void readGameState() {
+
+        Map<Integer, Integer> boardMap = new HashMap<>();
+
         try {
             ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(savedGameState));
             Object readMap = inStream.readObject();
@@ -82,14 +95,10 @@ public class GameEngine {
                 board[i][j].setTileDescription(boardMirror[i][j] == 1 ? "X" : boardMirror[i][j] == -1 ? "O" : "");
             }
         }
-    }
-
-    public void initBoardMirror() {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                boardMirror[i][j] = 0;
-            }
-        }
+        ScoreBoard.INSTANCE.setMachineScore(boardMap.get(-99));
+        ScoreBoard.INSTANCE.setPlayerScore(boardMap.get(99));
+        ScoreBoard.INSTANCE.updateScoreBoard();
+        gameOver = false;
     }
 
     private int checkResult() {
@@ -146,12 +155,7 @@ public class GameEngine {
         return result;
     }
 
-    private void updateScoreboardResults(int result) {
-        playerNoOfWins += (result == 0 || result == 1) ? 1 : 0;
-        machineNoOfWins += (result == 0 || result == -1) ? 1 : 0;
-    }
-
-    public void click(MouseEvent event, Tile tile) {
+    public void makeMoveForPlayer(MouseEvent event, Tile tile) {
 
         int x = tile.getX();
         int y = tile.getY();
@@ -160,9 +164,13 @@ public class GameEngine {
             tile.setTileDescription("X");
             boardMirror[x][y] = 1;
             int result = checkResult();
-            updateScoreboardResults(result);
             gameOver = (result != NO_WINNER || (countFreeCells() == 0));
-            if (!gameOver) makeMoveForMachine();
+            if (gameOver) {
+                ScoreBoard.INSTANCE.calculateScores(result);
+                ScoreBoard.INSTANCE.updateScoreBoard();
+            } else {
+                makeMoveForMachine();
+            }
         }
     }
 
@@ -186,8 +194,11 @@ public class GameEngine {
         board[bestMoveX][bestMoveY].setTileDescription("O");
         boardMirror[bestMoveX][bestMoveY] = -1;
         int result = checkResult();
-        updateScoreboardResults(result);
         gameOver = (result != NO_WINNER || countFreeCells() == 0);
+        if (gameOver) {
+            ScoreBoard.INSTANCE.calculateScores(result);
+            ScoreBoard.INSTANCE.updateScoreBoard();
+        }
     }
 
     private int miniMax(int[][] board, boolean looksForMax) {
