@@ -17,8 +17,8 @@ public class GameEngine {
     private int noOfCells;
     private int squareOfNoOfCells;
     private boolean gameOver = false;
-    private Tile[][] board = new Tile[5][5];
-    private final int[][] boardMirror = new int[5][5];
+    private Tile[][] board = new Tile[3][3];
+    private final int[][] boardMirror = new int[3][3];
     private int bestMoveX, bestMoveY;
     private File savedGameState = new File("gamestate.dat");
 
@@ -36,8 +36,8 @@ public class GameEngine {
     }
 
     public void initBoardMirror() {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 boardMirror[i][j] = 0;
             }
         }

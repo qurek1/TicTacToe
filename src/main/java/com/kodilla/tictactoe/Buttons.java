@@ -8,17 +8,20 @@ public class Buttons extends Pane {
 
     static Buttons INSTANCE = new Buttons();
 
-    final Button left = new Button("Start new game");
-    final Button middle = new Button("Continue last game");
-    final Button right = new Button("Exit game");
-    boolean clearScoreboard = false;
+    private final Button left = new Button("Start new game");
+    private final Button middle = new Button("Continue last game");
+    private final Button right = new Button("Exit game");
+
+    private final static int BUTTON_WIDTH = 180;
+    private final static int BUTTON_HEIGHT = 40;
+
+    private boolean clearScoreboard = false;
 
     private Buttons() {
 
         setPrefSize(600, 30);
 
-        left.setMaxSize(180, 40);
-        left.setMinSize(180, 40);
+        setButtonSize(left);
         left.setLayoutX(10);
         left.setLayoutY(10);
         left.setOnAction(actionEvent -> {
@@ -26,8 +29,7 @@ public class Buttons extends Pane {
             switchMiddleButtonFunction();
         });
 
-        middle.setMaxSize(180, 40);
-        middle.setMinSize(180, 40);
+        setButtonSize(middle);
         middle.setLayoutX(210);
         middle.setLayoutY(10);
         middle.setOnAction(actionEvent -> {
@@ -39,14 +41,12 @@ public class Buttons extends Pane {
             }
         });
 
-        right.setMinSize(180, 40);
-        right.setMaxSize(180, 40);
+        setButtonSize(right);
         right.setLayoutX(410);
         right.setLayoutY(10);
         right.setOnAction(actionEvent -> {
             GameEngine.INSTANCE.storeGameState();
             Platform.exit();
-            System.exit(0);
         });
 
         getChildren().add(left);
@@ -57,5 +57,10 @@ public class Buttons extends Pane {
     public void switchMiddleButtonFunction() {
         clearScoreboard = true;
         middle.setText("Clear scoreboard");
+    }
+
+    private void setButtonSize(Button button) {
+        button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        button.setMaxSize(BUTTON_WIDTH, BUTTON_HEIGHT);
     }
 }
