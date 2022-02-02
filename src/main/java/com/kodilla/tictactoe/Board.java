@@ -1,34 +1,32 @@
 package com.kodilla.tictactoe;
 
-import javafx.scene.Parent;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
-public class Board {
+public class Board extends Pane {
 
-    public static final int NO_OF_CELLS = 3;
+    private final int noOfCells;
     public static final int BOARD_SIZE = 600;
-    private static Tile[][] board = new Tile[NO_OF_CELLS][NO_OF_CELLS];
 
-    public static Parent createContent() {
-        Pane root = new Pane();
-        root.setPrefSize(BOARD_SIZE, BOARD_SIZE);
+    public Board(int numberOfCells) {
+        this.noOfCells = numberOfCells;
 
-        for (int y = 0; y < NO_OF_CELLS; y++) {
-            for (int x = 0; x < NO_OF_CELLS; x++) {
-                Tile tile = new Tile(x, y);
-                tile.setTranslateX(x * BOARD_SIZE / NO_OF_CELLS);
-                tile.setTranslateY(y * BOARD_SIZE / NO_OF_CELLS);
+        setPrefSize(BOARD_SIZE + noOfCells, BOARD_SIZE + noOfCells * 5);
+        Tile[][] board = new Tile[noOfCells][noOfCells];
 
-                root.getChildren().add(tile);
+        for (int y = 0; y < noOfCells; y++) {
+            for (int x = 0; x < noOfCells; x++) {
+                Tile tile = new Tile(x, y, noOfCells);
+                tile.setLayoutX(x * BOARD_SIZE / noOfCells + 10);
+                tile.setLayoutY(y * BOARD_SIZE / noOfCells + 10);
+
+                getChildren().add(tile);
 
                 board[x][y] = tile;
             }
         }
-
-        return root;
-    }
-
-    public static String getTileValue(int x, int y) {
-        return board[x][y].getTileDescription();
+        GameEngine.INSTANCE.setNoOfCells(noOfCells);
+        GameEngine.INSTANCE.setBoard(board);
+        GameEngine.INSTANCE.initBoardMirror();
     }
 }
